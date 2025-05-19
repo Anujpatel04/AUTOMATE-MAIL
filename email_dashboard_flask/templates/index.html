@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Support Threads{% endblock %}
+
+{% block content %}
+  <form method="get" class="mb-4">
+    <label for="limit" class="form-label">Emails to fetch:</label>
+    <select name="limit" id="limit" class="form-select w-auto d-inline-block" onchange="this.form.submit()">
+      {% for n in [5, 10, 20, 50] %}
+        <option value="{{n}}" {% if n == limit %}selected{% endif %}>{{n}}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  {% if threads %}
+    {% for thread in threads %}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+          <strong>🧵 Thread ID:</strong> {{ thread.thread_id }} ({{ thread.messages|length }} message{{ 's' if thread.messages|length > 1 else '' }})
+        </div>
+        <div class="card-body">
+          {% for mail in thread.messages %}
+            <div class="border-bottom mb-3 pb-2">
+              <div class="text-muted small">{{ mail.date }}</div>
+              <div><strong>From:</strong> {{ mail.from }}</div>
+              <div><strong>Subject:</strong> {{ mail.subject }}</div>
+              <pre class="mt-2 small">{{ mail.body }}</pre>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">No threads found.</p>
+  {% endif %}
+{% endblock %}
